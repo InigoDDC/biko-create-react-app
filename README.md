@@ -1,4 +1,6 @@
-# Create React App [![Build Status](https://travis-ci.org/facebook/create-react-app.svg?branch=master)](https://travis-ci.org/facebook/create-react-app) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-green.svg)](https://github.com/facebook/create-react-app/pulls)
+# Biko Create React App (custom  `@biko/react-scripts`) [![npm version](https://badge.fury.io/js/%40biko%2Freact-scripts@2x.png)]
+
+[Show custom react-script changelog](https://github.com/biko2/biko-create-react-app/tree/master/packages/react-scripts/custom-changelog.md)
 
 Create React apps with no build configuration.
 
