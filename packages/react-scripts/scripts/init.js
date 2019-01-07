@@ -195,6 +195,22 @@ module.exports = function(
     }
   }
 
+  // biko - if is typescript install custom dependencies
+  if (useTypeScript) {
+    console.log();
+    console.log(`Installing custom dependencies using ${command}...`);
+    console.log();
+
+    const proc = spawn.sync(
+      command, 
+      ['add', '@types/webpack-env'], { stdio: 'inherit' }
+    );
+    if (proc.status !== 0) {
+      console.error(`\`${command} ${args.join(' ')}\` failed`);
+      return;
+    }
+  }
+
   if (useTypeScript) {
     verifyTypeScriptSetup();
   }
