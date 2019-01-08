@@ -1,6 +1,19 @@
 ## Changelog
 
+### 1.1.0
+
+Permite añadir nuevas rutas incluídas para la compilación de fuentes a traves de la extensión de configuración de webpack.
+
+```
+module.exports = {
+  getIncludeCompilePaths: function() {
+    return [];
+  },
+};
+```
+
 ### 1.0.0
+
 Nuevo fork directo de create-react-app de Facebook. A partir de esto momento se usa babel para compilar Typescript.
 
 - Añade la posibilidad de añadir nuevos plugins a webpack a través de ficheros en el raiz del proyecto con el nombre: `webpack.config.dev.extension.js` y `webpack.config.prod.extension.js`
