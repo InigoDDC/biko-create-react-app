@@ -37,6 +37,11 @@ const getCacheIdentifier = require('react-dev-utils/getCacheIdentifier');
 
 // Source maps are resource heavy and can cause out of memory issue for large source files.
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
+//BIKO:START
+const shouldUseHiddenSourceMapsForJS =
+  process.env.JS_SOURCEMAPS_ARE_HIDDEN === 'true'
+//BIKO:END
+
 // Some apps do not need the benefits of saving a web request, so not inlining the chunk
 // makes for a smoother build process.
 const shouldInlineRuntimeChunk = process.env.INLINE_RUNTIME_CHUNK !== 'false';
@@ -50,11 +55,27 @@ const cssModuleRegex = /\.module\.css$/;
 const sassRegex = /\.(scss|sass)$/;
 const sassModuleRegex = /\.module\.(scss|sass)$/;
 
+//BIKO:START
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const loadCustomizer = require('./loadCustomizer')
+//BIKO:END
+
 // This is the production and development configuration.
 // It is focused on developer experience, fast rebuilds, and a minimal bundle.
 module.exports = function(webpackEnv) {
   const isEnvDevelopment = webpackEnv === 'development';
   const isEnvProduction = webpackEnv === 'production';
+
+  //BIKO:START
+  const webpackExtension = loadCustomizer(
+    path.resolve(
+      paths.appPath, 
+      isEnvDevelopment 
+        ? 'webpack.config.dev.extension.js' 
+        : 'webpack.config.prod.extension.js'
+    )
+  )
+  //BIKO:END
 
   // Webpack uses `publicPath` to determine where the app is being served from.
   // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -129,7 +150,9 @@ module.exports = function(webpackEnv) {
     bail: isEnvProduction,
     devtool: isEnvProduction
       ? shouldUseSourceMap
-        ? 'source-map'
+        ? shouldUseHiddenSourceMapsForJS
+          ? 'hidden-source-map'
+          : 'source-map'
         : false
       : isEnvDevelopment && 'eval-source-map',
     // These are the "entry points" to our application.
@@ -329,6 +352,10 @@ module.exports = function(webpackEnv) {
           // match the requirements. When no loader matches it will fall
           // back to the "file" loader at the end of the loader list.
           oneOf: [
+            //BIKO:START
+            ...webpackExtension.getRules(),
+            //BIKO:END
+
             // "url" loader works like "file" loader except that it embeds assets
             // smaller than specified limit in bytes as data URLs to avoid requests.
             // A missing `test` is equivalent to a match.
@@ -382,6 +409,9 @@ module.exports = function(webpackEnv) {
                       },
                     },
                   ],
+                  //BIKO:START
+                  require.resolve('babel-plugin-styled-components')
+                  //BIKO:END
                 ],
                 // This is a feature of `babel-loader` for webpack (not Babel itself).
                 // It enables caching results in ./node_modules/.cache/babel-loader/
@@ -648,6 +678,21 @@ module.exports = function(webpackEnv) {
           silent: true,
           formatter: typescriptFormatter,
         }),
+
+        //BIKO:START
+        // Lanza una utilidad para analizar los bundles y chunks en el puerto :8888
+        new BundleAnalyzerPlugin(isEnvDevelopment 
+          ? {
+            openAnalyzer: false,
+          }
+          : {
+            analyzerMode: 'static',
+            defaultSizes: 'gzip',
+            openAnalyzer: false,
+          }),
+
+        ...webpackExtension.getPlugins(),
+        //BIKO:END
     ].filter(Boolean),
     // Some libraries import Node modules but don't use them in the browser.
     // Tell Webpack to provide empty mocks for them so importing them works.

@@ -195,21 +195,47 @@ module.exports = function(
     }
   }
 
-  // biko - if is typescript install custom dependencies
+  //BIKO:START - if is typescript install custom dependencies
   if (useTypeScript) {
     console.log();
     console.log(`Installing custom dependencies using ${command}...`);
     console.log();
 
-    const proc = spawn.sync(
+    let dependenciesArgs;
+    let devDependenciesArgs;
+    if (useYarn) {
+      dependenciesArgs = ['add'];
+      devDependenciesArgs = ['add', '--dev'];
+    } else {
+      dependenciesArgs = ['install', '--save', verbose && '--verbose'].filter(e => e);
+      devDependenciesArgs = ['install', '--save-dev', verbose && '--verbose'].filter(e => e);
+    }
+
+    dependenciesArgs.push('@types/webpack-env');
+    const dependenciesProc = spawn.sync(
       command, 
-      ['add', '@types/webpack-env'], { stdio: 'inherit' }
+      dependenciesArgs, 
+      { stdio: 'inherit' }
     );
-    if (proc.status !== 0) {
-      console.error(`\`${command} ${args.join(' ')}\` failed`);
+    if (dependenciesProc.status !== 0) {
+      console.error(`\`${command} ${dependenciesArgs.join(' ')}\` failed`);
+      return;
+    }
+
+    devDependenciesArgs.push(
+      'webpack-bundle-analyzer', 
+      'babel-plugin-styled-components'
+    );
+    const devDependenciesProc = spawn.sync(
+      command, 
+      devDependenciesArgs, { stdio: 'inherit' }
+    );
+    if (devDependenciesProc.status !== 0) {
+      console.error(`\`${command} ${devDependenciesArgs.join(' ')}\` failed`);
       return;
     }
   }
+  //BIKO:END
 
   if (useTypeScript) {
     verifyTypeScriptSetup();
