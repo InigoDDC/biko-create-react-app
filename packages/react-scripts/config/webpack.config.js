@@ -39,7 +39,7 @@ const getCacheIdentifier = require('react-dev-utils/getCacheIdentifier');
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
 //BIKO:START
 const shouldUseHiddenSourceMapsForJS =
-  process.env.JS_SOURCEMAPS_ARE_HIDDEN === 'true'
+  process.env.JS_SOURCEMAPS_ARE_HIDDEN === 'true';
 //BIKO:END
 
 // Some apps do not need the benefits of saving a web request, so not inlining the chunk
@@ -56,8 +56,9 @@ const sassRegex = /\.(scss|sass)$/;
 const sassModuleRegex = /\.module\.(scss|sass)$/;
 
 //BIKO:START
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
-const loadCustomizer = require('./loadCustomizer')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+  .BundleAnalyzerPlugin;
+const loadCustomizer = require('./loadCustomizer');
 //BIKO:END
 
 // This is the production and development configuration.
@@ -69,12 +70,12 @@ module.exports = function(webpackEnv) {
   //BIKO:START
   const webpackExtension = loadCustomizer(
     path.resolve(
-      paths.appPath, 
-      isEnvDevelopment 
-        ? 'webpack.config.dev.extension.js' 
+      paths.appPath,
+      isEnvDevelopment
+        ? 'webpack.config.dev.extension.js'
         : 'webpack.config.prod.extension.js'
     )
-  )
+  );
   //BIKO:END
 
   // Webpack uses `publicPath` to determine where the app is being served from.
@@ -308,7 +309,8 @@ module.exports = function(webpackEnv) {
         // To fix this, we prevent you from importing files out of src/ -- if you'd like to,
         // please link the files into your node_modules/ and let module-resolution kick in.
         // Make sure your source files are compiled, as they will not be processed in any way.
-        new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]),
+        // BIKO:comment
+        // new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]),
       ],
     },
     resolveLoader: {
@@ -371,7 +373,10 @@ module.exports = function(webpackEnv) {
             // The preset includes JSX, Flow, TypeScript, and some ESnext features.
             {
               test: /\.(js|mjs|jsx|ts|tsx)$/,
-              include: paths.appSrc,
+              include: [
+                paths.appSrc,
+                ...webpackExtension.getIncludeCompilePaths(),
+              ],
               loader: require.resolve('babel-loader'),
               options: {
                 customize: require.resolve(
@@ -410,7 +415,7 @@ module.exports = function(webpackEnv) {
                     },
                   ],
                   //BIKO:START
-                  require.resolve('babel-plugin-styled-components')
+                  require.resolve('babel-plugin-styled-components'),
                   //BIKO:END
                 ],
                 // This is a feature of `babel-loader` for webpack (not Babel itself).
@@ -679,20 +684,22 @@ module.exports = function(webpackEnv) {
           formatter: typescriptFormatter,
         }),
 
-        //BIKO:START
-        // Lanza una utilidad para analizar los bundles y chunks en el puerto :8888
-        new BundleAnalyzerPlugin(isEnvDevelopment 
+      //BIKO:START
+      // Lanza una utilidad para analizar los bundles y chunks en el puerto :8888
+      new BundleAnalyzerPlugin(
+        isEnvDevelopment
           ? {
-            openAnalyzer: false,
-          }
+              openAnalyzer: false,
+            }
           : {
-            analyzerMode: 'static',
-            defaultSizes: 'gzip',
-            openAnalyzer: false,
-          }),
+              analyzerMode: 'static',
+              defaultSizes: 'gzip',
+              openAnalyzer: false,
+            }
+      ),
 
-        ...webpackExtension.getPlugins(),
-        //BIKO:END
+      ...webpackExtension.getPlugins(),
+      //BIKO:END
     ].filter(Boolean),
     // Some libraries import Node modules but don't use them in the browser.
     // Tell Webpack to provide empty mocks for them so importing them works.
