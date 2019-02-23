@@ -1,5 +1,9 @@
 ## Changelog
 
+### 1.2.0
+
+Actualiza a la versión 2.1.5 de create-react-app
+
 ### 1.1.0
 
 Permite añadir nuevas rutas incluídas para la compilación de fuentes a traves de la extensión de configuración de webpack.
