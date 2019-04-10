@@ -202,6 +202,9 @@ module.exports = function(webpackEnv) {
               .replace(/\\/g, '/')
         : isEnvDevelopment &&
           (info => path.resolve(info.absoluteResourcePath).replace(/\\/g, '/')),
+      //BIKO:START
+      jsonpFunction: webpackExtension.getJsonpFunction(),
+      //BIKO:END
     },
     optimization: {
       minimize: isEnvProduction,
