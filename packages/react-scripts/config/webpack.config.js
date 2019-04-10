@@ -24,6 +24,7 @@ const ManifestPlugin = require('webpack-manifest-plugin');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
 const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
+// BIKO:comment
 // const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent');
 const paths = require('./paths');
@@ -59,6 +60,7 @@ const sassModuleRegex = /\.module\.(scss|sass)$/;
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin;
 const loadCustomizer = require('./loadCustomizer');
+const entriesFactory = require('./entriesFactory');
 //BIKO:END
 
 // This is the production and development configuration.
@@ -154,7 +156,8 @@ module.exports = function(webpackEnv) {
       : isEnvDevelopment && 'eval-source-map',
     // These are the "entry points" to our application.
     // This means they will be the "root" imports that are included in JS bundle.
-    entry: [
+    //BIKO:START    
+    entry: entriesFactory.create(webpackExtension.getEntries(), [
       // Include an alternative client for WebpackDevServer. A client's job is to
       // connect to WebpackDevServer by a socket and get notified about changes.
       // When you save a file, the client will either apply hot updates (in case
@@ -172,7 +175,8 @@ module.exports = function(webpackEnv) {
       // We include the app code last so that if there is a runtime error during
       // initialization, it doesn't blow up the WebpackDevServer client, and
       // changing JS code would still trigger a refresh.
-    ].filter(Boolean),
+    ].filter(Boolean)),
+    //BIKO:END
     output: {
       // The build folder.
       path: isEnvProduction ? paths.appBuild : undefined,
@@ -371,7 +375,9 @@ module.exports = function(webpackEnv) {
               test: /\.(js|mjs|jsx|ts|tsx)$/,
               include: [
                 paths.appSrc,
+                //BIKO:START
                 ...webpackExtension.getIncludeCompilePaths(),
+                //BIKO:END
               ],
               loader: require.resolve('babel-loader'),
               options: {
@@ -562,6 +568,9 @@ module.exports = function(webpackEnv) {
           {
             inject: true,
             template: paths.appHtml,
+            //BIKO:START
+            chunks: ['main'],
+            //BIKO:END
           },
           isEnvProduction
             ? {

@@ -21,6 +21,7 @@ function requireCustomizer(modulePath, isDevelopment) {
 function ensureCustomizerMethods(customizer) {
   return Object.assign(
     {
+      getEntries: () => ({}),
       getRules: () => [],
       getPlugins: () => [],
       getIncludeCompilePaths: () => [],
