@@ -5,11 +5,11 @@ module.exports = function loadCustomizer(modulePath) {
   return ensureCustomizerMethods(customizer);
 };
 
-function requireCustomizer(modulePath) {
+function requireCustomizer(modulePath, isDevelopment) {
   try {
     const moduleDefault = require(modulePath);
     console.log(`Extending webpack config from: ${modulePath}`);
-    return moduleDefault;
+    return moduleDefault(isDevelopment);
   } catch (e) {
     if (e.code === 'MODULE_NOT_FOUND') {
       return {};
