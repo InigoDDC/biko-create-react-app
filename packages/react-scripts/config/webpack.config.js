@@ -203,7 +203,7 @@ module.exports = function(webpackEnv) {
         : isEnvDevelopment &&
           (info => path.resolve(info.absoluteResourcePath).replace(/\\/g, '/')),
       //BIKO:START
-      jsonpFunction: webpackExtension.getJsonpFunction(),
+      jsonpFunction: webpackExtension.getJsonpFunctionName(),
       //BIKO:END
     },
     optimization: {
@@ -314,6 +314,10 @@ module.exports = function(webpackEnv) {
         // Make sure your source files are compiled, as they will not be processed in any way.
         // BIKO:comment
         // new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]),
+        //BIKO:START
+        ...webpackExtension.getResolvePlugins(),
+        //BIKO:END
+  
       ],
     },
     resolveLoader: {

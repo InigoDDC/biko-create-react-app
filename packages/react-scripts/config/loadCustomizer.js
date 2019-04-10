@@ -25,7 +25,8 @@ function ensureCustomizerMethods(customizer) {
       getRules: () => [],
       getPlugins: () => [],
       getIncludeCompilePaths: () => [],
-      getJsonpFunction: () => undefined,
+      getJsonpFunctionName: () => undefined,
+      getResolvePlugins: () => [],
     },
     customizer
   );
