@@ -8,9 +8,7 @@ function create(entries, mainFiles) {
   };
   const globalFiles = mainFiles.slice(0, -1);
   Object.keys(entries).forEach(entry => {
-      const files = entries[entry];
-      const entryFiles = Array.isArray(files) ? files : [files];
-      entriesConfig[entry] = globalFiles.concat(entryFiles);
+      entriesConfig[entry] = [...globalFiles, entries[entry]];
   })
   return entriesConfig;
 };
