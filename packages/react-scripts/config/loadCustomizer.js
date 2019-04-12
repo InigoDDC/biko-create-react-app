@@ -1,15 +1,15 @@
 'use strict';
 
-module.exports = function loadCustomizer(modulePath) {
-  const customizer = requireCustomizer(modulePath);
+module.exports = function loadCustomizer(modulePath, webpackEnv) {
+  const customizer = requireCustomizer(modulePath, webpackEnv);
   return ensureCustomizerMethods(customizer);
 };
 
-function requireCustomizer(modulePath, isDevelopment) {
+function requireCustomizer(modulePath, webpackEnv) {
   try {
     const moduleDefault = require(modulePath);
     console.log(`Extending webpack config from: ${modulePath}`);
-    return moduleDefault(isDevelopment);
+    return moduleDefault(webpackEnv);
   } catch (e) {
     if (e.code === 'MODULE_NOT_FOUND') {
       return {};

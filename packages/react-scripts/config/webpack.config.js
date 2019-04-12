@@ -72,7 +72,7 @@ module.exports = function(webpackEnv) {
   //BIKO:START
   const webpackExtension = loadCustomizer(
     path.resolve(paths.appPath, 'webpack.config.extension.js'),
-    isEnvDevelopment,
+    webpackEnv,
   );
   //BIKO:END
 
