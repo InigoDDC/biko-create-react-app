@@ -1,8 +1,8 @@
 'use strict';
 
-module.exports = { create, mainEntryName };
-
 const mainEntryName = 'main';
+
+module.exports = { create, mainEntryName };
 
 function create(entries, mainFiles) {
   const entriesConfig = {
