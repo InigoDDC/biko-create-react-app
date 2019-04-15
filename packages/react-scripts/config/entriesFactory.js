@@ -1,10 +1,12 @@
 'use strict';
 
-module.exports = { create };
+module.exports = { create, mainEntryName };
+
+const mainEntryName = 'main';
 
 function create(entries, mainFiles) {
   const entriesConfig = {
-      main: mainFiles,
+      [mainEntryName]: mainFiles,
   };
   const globalFiles = mainFiles.slice(0, -1);
   Object.keys(entries).forEach(entry => {

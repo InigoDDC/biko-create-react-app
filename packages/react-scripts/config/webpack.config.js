@@ -576,7 +576,7 @@ module.exports = function(webpackEnv) {
             inject: true,
             template: paths.appHtml,
             //BIKO:START
-            chunks: ['main'],
+            chunks: [entriesFactory.mainEntryName],
             //BIKO:END
           },
           isEnvProduction
