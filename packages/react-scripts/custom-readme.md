@@ -11,3 +11,42 @@ Para poder probar modificaciones que se estén desarrollando localmente en @biko
     **Importante:** Este paso hay que ejecutarlo cada vez que haya nuevas modificaciones en @biko/react-scripts que se deseen probar en el proyecto
 
 Una vez realizados estos pasos en el proyecto ya se estará utilizando la versión local de @biko/react-scripts.
+
+### Como poder utilizar rutas absolutas como en versiones anteriores
+
+Para poder utilizar rutas absolutas como en versiones acteriores de create-react-scripts, hay que realizar la siguiente configuración:
+
+1. Modificar el fichero tsconfig.json para que extienda de otro llamado tsconfig.paths.json que contendrá la configuración de baseUrl y paths:
+
+    tsconfig.json
+    ```
+    {
+      "extends": "./tsconfig.paths.json",
+      "compilerOptions": {
+        ...
+      }
+    }
+    ```
+    tsconfig.paths.json
+    ```
+    {
+      "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+          "$*": [
+            "src/*"
+          ]
+        }
+      }
+    }
+    ```
+
+2. Crear y/o modificar el fichero webpack.config.extension.js para que el método getResolvePlugins devuelva el plugin tsconfig-paths-webpack-plugin:
+
+    ```
+    const TsconfigPathsWebpackPlugin = require('tsconfig-paths-webpack-plugin');
+
+    module.exports = () => ({
+      getResolvePlugins: () => [new TsconfigPathsWebpackPlugin()],
+    });
+    ```
